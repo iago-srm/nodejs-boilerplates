@@ -8,12 +8,11 @@ import {
 import { json } from "body-parser";
 import { errorHandler, startPolyglot } from "@iagosrm/common";
 
-import { RedisProxy } from "@infrastructure";
 import { UserUseCase } from "@application";
 import { makeUserRouter } from "@presentation";
+import { Database } from "@infrastructure";
 import { Application } from "./app";
 import { Messages } from "@locales";
-import { createRedisClient } from "@infrastructure";
 import { dbConnectionNames } from "../ormconfig.enum";
 
 export enum MiddlewareNames {
@@ -31,7 +30,7 @@ export enum Dependencies {
 const rootContainer = createContainer();
 
 rootContainer.register({
-  db: asClass(RedisProxy)
+  db: asClass(Database)
     .singleton()
     .disposer(async (db) => await db.closeConnection()),
   [Dependencies.APP]: asClass(Application)
@@ -55,20 +54,14 @@ const testContainer = rootContainer.createScope();
 
 const devContainerConfig = {
   dbConnectionName: dbConnectionNames.DEVELOPMENT,
-  redisHost: process.env.REDIS_HOST_DEVELOPMENT,
-  redisPort: process.env.REDIS_PORT_DEVELOPMENT,
 };
 
 const prodContainerConfig = {
   dbConnectionName: dbConnectionNames.PRODUCTION,
-  redisHost: process.env.REDIS_HOST,
-  redisPort: process.env.REDIS_PORT,
 };
 
 const testContainerConfig = {
   dbConnectionName: dbConnectionNames.TEST,
-  redisHost: process.env.REDIS_HOST_TEST,
-  redisPort: process.env.REDIS_PORT_TEST,
 };
 
 const registerScopeDependencies = (
@@ -77,12 +70,6 @@ const registerScopeDependencies = (
 ) => {
   scopeContainer.register({
     dbConnectionName: asValue(config.dbConnectionName),
-    redisClient: asFunction(createRedisClient).inject(() => {
-      return {
-        host: config.redisHost,
-        port: config.redisPort,
-      };
-    }),
   });
 };
 

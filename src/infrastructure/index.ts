@@ -1,3 +1,1 @@
-export * from "./cached-database";
-export { IDatabase } from "./database";
-export * from "./redis-client";
+export { Database, IDatabase } from "./database";

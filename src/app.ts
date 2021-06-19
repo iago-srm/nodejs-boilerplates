@@ -2,7 +2,7 @@ import express, { Express, RequestHandler, Router } from "express";
 import "express-async-errors";
 import { NotFoundError } from "@iagosrm/common";
 import { __prod__ } from "./constants";
-import { RedisProxy } from "@infrastructure";
+import { Database } from "@infrastructure";
 import { Server } from "http";
 import helmet from "helmet";
 import cors from "cors";
@@ -10,12 +10,12 @@ import cors from "cors";
 interface ApplicationParams {
   middleware: { [key: string]: RequestHandler };
   userRouter: Router;
-  db: RedisProxy;
+  db: Database;
 }
 
 export class Application {
   _app: Express;
-  _db: RedisProxy;
+  _db: Database;
   _server: Server;
   baseUrn = "api/v1";
 

@@ -1,15 +1,13 @@
 import { testContainer, Dependencies } from "../containers";
 import { Application } from "../app";
-import { RedisProxy } from "@infrastructure";
+import { Database } from "@infrastructure";
 
 export const baseUrn = `/api/v1/users`;
 
 export const testAppInstance: Application = testContainer.resolve(
   Dependencies.APP
 ) as Application;
-export const testDbInstance: RedisProxy = testContainer.resolve(
-  Dependencies.DB
-);
+export const testDbInstance: Database = testContainer.resolve(Dependencies.DB);
 
 beforeAll(() => {
   return testAppInstance.start();
