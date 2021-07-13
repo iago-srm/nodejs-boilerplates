@@ -117,7 +117,10 @@ export const makeUserRouter = (userUseCase: IUserUseCase) => {
       });
 
       if (result) return res.sendStatus(200);
-      return res.sendStatus(404);
+      throw new DatabaseError(
+        "User with that unique identifier not found",
+        404
+      );
     }
   );
 
